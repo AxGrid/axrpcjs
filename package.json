@@ -1,5 +1,5 @@
 {
-  "name": "axrpc",
+  "name": "axrpcjs",
   "version": "1.0.0",
   "main": "src/axrpc.js",
   "dependencies": {
