@@ -71,7 +71,7 @@ function renderToString(source, data) {
   return template({services: data, opt: program.opts()});
 }
 
-http.get('http://localhost:8080/ax-rpc/v1/description.json', (resp) => {
+http.get(program.opts().json, (resp) => {
 	let data = '';
 	resp.on('data', (chunk) => { data += chunk; });
 	resp.on('end', () => {
