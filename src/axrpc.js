@@ -11,6 +11,8 @@ function myParseInt(value, dummyPrevious) {
   return parseInt(value);
 }
 
+
+
 program
   .option('-j, --json <url>', 'json path', "http://localhost:8080/ax-rpc/v1/description.json")
   .option('-o, --output <path>', 'output folder')
@@ -19,8 +21,9 @@ program
 
 
 program.parse(process.argv);
+if (program.opts().verbose) console.log(program.opts());
+if (program.opts().verbose) console.log("DIR:", __dirname);
 
-console.log(program.opts());
 handlebars.registerHelper('ifEquals', function (arg1, arg2, options) {
   return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
 });
@@ -35,7 +38,7 @@ handlebars.registerHelper('uncapitalize', function (str1){ return str1.charAt(0)
 
 
 function render(jsonData) {
-	fs.readFile('./src/axrpc.hbs', function(err, data){
+	fs.readFile(__dirname + '/axrpc.hbs', function(err, data){
       if (!err) {
         const source = data.toString();
         const res = renderToString(source, jsonData);
