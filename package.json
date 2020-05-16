@@ -1,0 +1,18 @@
+{
+  "name": "axrpc",
+  "version": "1.0.0",
+  "main": "src/axrpc.js",
+  "dependencies": {
+    "commander": "^5.1.0",
+    "handlebars": "^4.7.6"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.8.6",
+    "babel-preset-expo": "~8.1.0"
+  },
+  "scripts": {
+    "create": "node src/axrpc.js"
+  },
+  "private": true,
+  "bin": "./src/axrpc.js"
+}
