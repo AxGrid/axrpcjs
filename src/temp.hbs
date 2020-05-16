@@ -1,0 +1,55 @@
+/// {{ method.description }}{{ if service.description != "Common Service" }} ({{ service.description }}){{ end }}
+{{ method.name }}({{ if !method.empty_request }}request{{ end }}{{ if method.trx_required }}, trx {{ end }}) {
+const ro = new inout.{{ service.request_object }}();
+{{ if method.login_required && service.session_field_name && service.session_field_name != "" }}ro.{{ service.session_field_name }} = this.getSession();{{ end }}
+{{ if service.correlation_id_field_name && service.correlation_id_field_name != "" }}ro.{{ service.correlation_id_field_name }} = this.params.correlationId++;{{ end }}
+{{ if method.trx_required && service.trx_field_name }}ro.{{ service.trx_field_name }} = trx;{{ end }}
+ro.{{ method.request_name | un_capitalize }} = {{ if method.empty_request }}{};{{ else }}request;{{ end }}
+
+
+const bytes = inout.Request.encode(ro).finish();
+if (this.params.debug)  console.log("REQUEST to:[{{ opt.entry_point_path }}] {{method}}(", ro.{{ method.request_name | un_capitalize }} ,")");
+return axios.post(this.params.url+"{{ opt.entry_point_path }}"", new Uint8Array(bytes), {
+headers: { 'Content-Type': 'application/octet-stream'},
+responseType: "arraybuffer"
+}).then(response => {
+if (this.params.debug)  console.log("CODE:", response.status, "DATA:", response.data);
+if (response.status === 200) {
+const po = inout.Response.decode(new Uint8Array(response.data));
+if (this.params.debug) console.log("RESPONSE:", po);
+if (po.errorCode) {
+if (po.errorCode === 401 && this.params.store) this.params.store.dispatch({type:"CLEAR_SESSION"});
+throw new AxRPCError(po.errorText, po.errorCode);
+}
+return po.{{ method.response_name | un_capitalize }};
+} else {
+throw new AxRPCError("Http Error", response.status);
+}
+}, error => { throw new AxRPCError("Network Error", 1)});
+}
+
+
+!---
+
+
+export class {{service.name}} {
+
+constructor(params) {
+this.params = {...configuration, ...params};
+}
+
+getSession() {
+if (this.params.session)
+if (typeof this.params.session === "function") {
+return this.params.session();
+} else { return this.params.session; }
+return "";
+}
+
+{{#each service.methods as method }}
+    /// {{ method.description }}{{#ifUnless service.description "Common Service" }} ({{ service.description }}){{/ifUnless}}
+    {{ method.name }}({{#unless method.empty_request }}request{{/unless}}{{#if method.trx_required }}, trx {{/if}}) {
+    const ro = new inout.{{ service.request_object }}();
+    //TODO: Here body
+    }
+{{/each}}
