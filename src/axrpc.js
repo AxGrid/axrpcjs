@@ -11,14 +11,25 @@ function myParseInt(value, dummyPrevious) {
   return parseInt(value);
 }
 
+function optIntParser(def) {
+    return function(val, dummyPrevious) {
+        return parseInt(val) || def;
+    }
+}
+
 
 
 program
-  .option('-j, --json <url>', 'json path', "http://localhost:8080/ax-rpc/v1/description.json")
-  .option('-o, --output <path>', 'output folder')
-  .option('-v, --verbose', 'verbose', false)
-  .option('-n, --number <number>', 'num', myParseInt)
-
+    .option('-j, --json <url>', 'json path', "http://localhost:8080/ax-rpc/v1/description.json")
+    .option('-o, --output <path>', 'output folder')
+    .option('-v, --verbose', 'verbose', false)
+    .option('-p, --entryPoint <text>', 'Add additional Path')
+    .option('-n, --protobufNs <text>', 'Default protobuf namespace', 'com.axgrid.rpc')
+    .option('--retryCount <number>', 'Retry Count', optIntParser(10))
+    .option('--retryTimeout <number>', 'Retry Delay', optIntParser(200))
+    .option('--serviceName <text>', 'Create single Service class')
+    .option('--serviceName <text>', 'Create single Service class')
+    .option('-e, --excludeCommon', 'Exclude Common', false)
 
 program.parse(process.argv);
 if (program.opts().verbose) console.log(program.opts());
@@ -57,7 +68,7 @@ function render(jsonData) {
 function renderToString(source, data) {
     const template = handlebars.compile(source);
     if (program.opts().verbose) console.log("Data is", data)
-  return template({services: data});
+  return template({services: data, opt: program.opts()});
 }
 
 http.get('http://localhost:8080/ax-rpc/v1/description.json', (resp) => {

@@ -3,9 +3,9 @@
 import axios from 'axios';
 import proto from "./proto"
 
-const inout = {{#if opt.protobuf_ns }}proto.{{ opt.protobuf_ns }}{{else}}proto{{/if}};
+const inout = {{#if opt.protobufNs }}proto.{{ opt.protobufNs }}{{else}}proto{{/if}};
 
-{{#unless opt.exclude_commons }}
+{{#unless opt.excludeCommons }}
 const configuration = {
    url: "/ax-rpc/v1/",
    correlationId: 0,
