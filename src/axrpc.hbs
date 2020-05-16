@@ -44,7 +44,6 @@ export class {{service.name}} {
     /// {{ method.description }}{{#ifUnless service.description "Common Service" }} ({{ service.description }}){{/ifUnless}}
     {{ method.name }}({{#unless method.emptyRequest }}request{{/unless}}{{#if method.trxRequired }}, trx{{/if}}) {
         const ro = new inout.{{ service.requestObject }}();
-        //TODO: Here body
         {{#if method.loginRequired }}{{#if service.sessionFieldName }}ro.{{ service.sessionFieldName }} = this.getSession();{{/if}}{{/if}}
         {{#if service.correlationIdFieldName}}ro.{{ service.correlationIdFieldName }} = this.params.correlationId++;{{/if}}
         {{#if method.trxRequired}}{{#if service.trxFieldName }}ro.{{ service.trxFieldName }} = trx;{{/if}}{{/if}}

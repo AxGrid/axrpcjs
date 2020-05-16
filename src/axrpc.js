@@ -66,6 +66,14 @@ function render(jsonData) {
 // this will be called after the file is read
 function renderToString(source, data) {
     const template = handlebars.compile(source);
+    if (program.opts().serviceName) {
+        const axMethods  = data.flatMap(item => item.methods);
+        data = data[0];
+        data.methods = axMethods;
+        data.name = program.opts().serviceName;
+        data = [data];
+    }
+    console.log(data);
     //if (program.opts().verbose) console.log("Data is", data)
   return template({services: data, opt: program.opts()});
 }
