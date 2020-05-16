@@ -33,7 +33,6 @@ program
 
 program.parse(process.argv);
 if (program.opts().verbose) console.log(program.opts());
-if (program.opts().verbose) console.log("DIR:", __dirname);
 
 handlebars.registerHelper('ifEquals', function (arg1, arg2, options) {
   return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
@@ -67,7 +66,7 @@ function render(jsonData) {
 // this will be called after the file is read
 function renderToString(source, data) {
     const template = handlebars.compile(source);
-    if (program.opts().verbose) console.log("Data is", data)
+    //if (program.opts().verbose) console.log("Data is", data)
   return template({services: data, opt: program.opts()});
 }
 

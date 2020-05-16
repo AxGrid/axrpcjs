@@ -46,10 +46,10 @@ export class {{service.name}} {
         {{#if method.trxRequired}}{{#if service.trxFieldName }}ro.{{ service.trxFieldName }} = trx;{{/if}}{{/if}}
         ro.{{ uncapitalize method.requestName }} = {{#if method.emptyRequest }}{};{{ else }}request;{{/if}}
         const bytes = inout.Request.encode(ro).finish();
-        if (this.params.debug)  console.log("REQUEST to:[{{ opt.entryPointPath }}] {{method}}(", ro.{{ uncapitalize method.requestName }} ,")");
+        if (this.params.debug)  console.log("REQUEST to:[{{ ../../opt.entryPointPath }}] {{method}}(", ro.{{ uncapitalize method.requestName }} ,")");
 
         return axios
-            .post(this.params.url+"{{ opt.entryPointPath }}", new Uint8Array(bytes),{ headers: { 'Content-Type': 'application/octet-stream'}, responseType: "arraybuffer"})
+            .post(this.params.url{{#if ../../opt.entryPoint }}+"{{../../opt.entryPoint}}"{{/if}}, new Uint8Array(bytes),{ headers: { 'Content-Type': 'application/octet-stream'}, responseType: "arraybuffer"})
             .then(response => {
                 if (this.params.debug)  console.log("CODE:", response.status, "DATA:", response.data);
                 if (response.status === 200) {
@@ -68,4 +68,5 @@ export class {{service.name}} {
     {{/each}}
 }
 {{/each}}
+
 
