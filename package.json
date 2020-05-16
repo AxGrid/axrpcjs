@@ -1,6 +1,6 @@
 {
   "name": "axrpcjs",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "src/axrpc.js",
   "dependencies": {
     "commander": "^5.1.0",

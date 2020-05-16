@@ -2,8 +2,11 @@
 
 import axios from 'axios';
 import proto from "./proto"
+import EventEmitter from "events";
 
 const inout = {{#if opt.protobufNs }}proto.{{ opt.protobufNs }}{{else}}proto{{/if}};
+
+const emitter = new EventEmitter();
 
 {{#unless opt.excludeCommons }}
 const configuration = {
@@ -24,8 +27,9 @@ export class AxRPCError extends Error {
 
 export class {{service.name}} {
 
-    constructor(params) {
+    constructor(params = {}) {
         this.params = {...configuration, ...params};
+        this.emitter = emitter;
     }
 
     getSession() {
@@ -56,11 +60,12 @@ export class {{service.name}} {
                     const po = inout.Response.decode(new Uint8Array(response.data));
                     if (this.params.debug) console.log("RESPONSE:", po);
                     if (po.errorCode) {
-                        if (po.errorCode === 401 && this.params.store) this.params.store.dispatch({type:"CLEAR_SESSION"});
+                        if (po.errorCode === 401) { this.emitter.emit('clearSession'); }
                         throw new AxRPCError(po.errorText, po.errorCode);
                     }
                     return po.{{ uncapitalize method.responseName }};
                 } else {
+                    if (response.status === 401) { this.emitter.emit('clearSession'); }
                     throw new AxRPCError("Http Error", response.status);
                 }
             }, error => { throw new AxRPCError("Network Error", 1)});
