@@ -4,7 +4,7 @@
   "main": "src/axrpc.js",
   "dependencies": {
     "commander": "^5.1.0",
-    "handlebars": "^4.7.6"
+    "handlebars": "^4.7.7"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",
